@@ -1,6 +1,6 @@
 // Make the AI Judge Laugh: the Office Joke Open — one original office one-liner.
 // The grader runs this program twice; it must write byte-identical output.
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 
 const JOKE =
   "I asked IT for a second monitor and got a lecture on minimalism from a man with four screens.";
@@ -17,3 +17,8 @@ if (JOKE.includes("\n") || JOKE.includes("\r")) {
 const outDir = process.env.OUTPUT_DIR ?? "/output";
 mkdirSync(outDir, { recursive: true });
 writeFileSync(`${outDir}/entry.txt`, JOKE, "utf8");
+
+// Verify the write round-trips byte-identically before exiting.
+if (readFileSync(`${outDir}/entry.txt`, "utf8") !== JOKE) {
+  throw new Error("entry.txt does not match the joke");
+}
